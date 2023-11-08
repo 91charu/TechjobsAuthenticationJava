@@ -45,13 +45,13 @@ public class AuthenticationController {
 
     @GetMapping("/register")
     public String displayRegistrationForm(Model model, HttpSession session) {
-        model.addAttribute(new RegistrationFormDTO());
+        model.addAttribute("registerFormDTO", new RegistrationFormDTO());
         model.addAttribute("loggedIn", session.getAttribute(userSessionKey) != null);
         return "register";
     }
 
     @PostMapping("/register")
-    public String processRegistrationForm(@ModelAttribute @Valid RegistrationFormDTO registrationFormDTO, Errors errors, HttpServletRequest request) {
+    public String processRegistrationForm(@ModelAttribute @Valid RegistrationFormDTO registrationFormDTO, Errors errors, HttpServletRequest request, Model model) {
 
         //send user back if errors found
 
@@ -71,7 +71,10 @@ public class AuthenticationController {
 
         if (!password.equals(verifyPassword)) {
             errors.rejectValue("password", "passwords.mismatch", "Passwords do not match");
+            model.addAttribute("title", "Register");
+            return "register";
         }
+
 
         //save new username and pwd
 
